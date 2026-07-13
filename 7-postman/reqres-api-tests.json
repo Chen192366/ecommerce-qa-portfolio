@@ -1,0 +1,524 @@
+{
+  "info": {
+    "name": "Reqres API 测试集合",
+    "description": "针对 Reqres.in 公共 REST API 的自动化测试集合，覆盖登录、注册、用户 CRUD 及异常场景。共 20 条用例。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "登录 - 合法凭据（应返回200 + token）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has token', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('token');",
+                  "  pm.expect(jsonData.token).to.eql('QpwL5tke4Pnpja7X4');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "登录 - 密码缺失（应返回400）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message is Missing password', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.error).to.eql('Missing password');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "登录 - 用户名缺失（应返回400）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message contains missing email or username', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.error).to.include('Missing');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "登录 - 用户不存在（应返回400）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Response has error message', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('error');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"notfound@reqres.in\",\n  \"password\": \"whatever\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "注册 - 合法（应返回201 + id + token）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has id and token', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "  pm.expect(jsonData).to.have.property('token');",
+                  "  pm.expect(jsonData.id).to.eql(4);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"pistol\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": ["{{base_url}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "注册 - 密码缺失（应返回400）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message is Missing password', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.error).to.eql('Missing password');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sydney@fife\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": ["{{base_url}}"],
+              "path": ["register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users CRUD",
+      "item": [
+        {
+          "name": "GET 用户列表 - 第1页（应返回200 + data数组）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has data array with users', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('data');",
+                  "  pm.expect(jsonData.data.length).to.be.above(0);",
+                  "  pm.expect(jsonData.data[0]).to.have.property('id');",
+                  "  pm.expect(jsonData.data[0]).to.have.property('email');",
+                  "  pm.expect(jsonData.data[0]).to.have.property('first_name');",
+                  "  pm.expect(jsonData.data[0]).to.have.property('last_name');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/users?page=1",
+              "host": ["{{base_url}}"],
+              "path": ["users"],
+              "query": [{ "key": "page", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "GET 单个用户 - ID 2（应返回200 + Janet）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('User data matches Janet Weaver', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.data.id).to.eql(2);",
+                  "  pm.expect(jsonData.data.email).to.eql('janet.weaver@reqres.in');",
+                  "  pm.expect(jsonData.data.first_name).to.eql('Janet');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["users", "2"]
+            }
+          }
+        },
+        {
+          "name": "GET 单个用户 - ID 23 不存在（应返回404）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/users/23",
+              "host": ["{{base_url}}"],
+              "path": ["users", "23"]
+            }
+          }
+        },
+        {
+          "name": "POST 创建用户（应返回201 + id）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Created user data is correct', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.name).to.eql('Zhang San');",
+                  "  pm.expect(jsonData.job).to.eql('QA Engineer');",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "  pm.expect(jsonData).to.have.property('createdAt');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zhang San\",\n  \"job\": \"QA Engineer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "PUT 更新用户（应返回200）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Updated data is correct', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.name).to.eql('Zhang San Updated');",
+                  "  pm.expect(jsonData.job).to.eql('Senior QA Engineer');",
+                  "  pm.expect(jsonData).to.have.property('updatedAt');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zhang San Updated\",\n  \"job\": \"Senior QA Engineer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["users", "2"]
+            }
+          }
+        },
+        {
+          "name": "PATCH 部分更新用户（应返回200）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Partially updated job is correct', function() {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.job).to.eql('Lead QA Engineer');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job\": \"Lead QA Engineer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["users", "2"]
+            }
+          }
+        },
+        {
+          "name": "DELETE 删除用户（应返回204）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 204', function() {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["users", "2"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "参数化测试（用户ID 1-6）",
+      "item": [
+        {
+          "name": "GET 用户 ID 1（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] }
+          }
+        },
+        {
+          "name": "GET 用户 ID 2（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/2", "host": ["{{base_url}}"], "path": ["users", "2"] }
+          }
+        },
+        {
+          "name": "GET 用户 ID 3（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/3", "host": ["{{base_url}}"], "path": ["users", "3"] }
+          }
+        },
+        {
+          "name": "GET 用户 ID 4（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/4", "host": ["{{base_url}}"], "path": ["users", "4"] }
+          }
+        },
+        {
+          "name": "GET 用户 ID 5（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/5", "host": ["{{base_url}}"], "path": ["users", "5"] }
+          }
+        },
+        {
+          "name": "GET 用户 ID 6（应返回200）",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
+          }],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/users/6", "host": ["{{base_url}}"], "path": ["users", "6"] }
+          }
+        }
+      ]
+    }
+  ]
+}

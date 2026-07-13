@@ -20,7 +20,8 @@
 ├── 3-api-testing/           # 20条 Pytest+Requests API 自动化用例
 ├── 4-automation/            # Selenium POM 框架 + 22条 UI 自动化用例
 ├── 5-bug-reports/           # 3份规范缺陷报告
-└── 6-screenshots/           # 测试截图
+├── 6-screenshots/           # 测试截图
+└── 7-postman/               # Postman API 测试集合（20条用例）
 ```
 
 ## 测试覆盖
@@ -36,7 +37,7 @@
 
 - **测试框架**：Pytest 9.x + pytest-html
 - **Web 自动化**：Selenium 4.x + Page Object Model
-- **API 测试**：Requests + Pytest
+- **API 测试**：Requests + Pytest + Postman
 - **数据库**：MySQL 8.0 + mysql-connector-python
 - **设计模式**：POM（BasePage + 4个页面对象）
 
@@ -61,12 +62,18 @@ mysql -u root -p < 2-sql-testing/seed-data.sql
 # 在 MySQL 中逐条执行 queries/ 下的 SQL 文件
 ```
 
-### API 测试
+### API 测试（代码方式）
 
 ```bash
 cd 3-api-testing
 pytest -v
 ```
+
+### API 测试（Postman 图形化方式）
+
+1. 打开 Postman，导入 `7-postman/reqres-api-tests.json` 和 `reqres-env.json`
+2. 切换环境为 **Reqres 测试环境**
+3. 运行集合即可看到 20 条用例执行结果
 
 ## 项目亮点
 

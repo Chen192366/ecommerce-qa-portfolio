@@ -1,0 +1,11 @@
+{
+  "name": "Reqres 测试环境",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://reqres.in/api",
+      "type": "default",
+      "enabled": true
+    }
+  ]
+}
