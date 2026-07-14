@@ -1,249 +1,28 @@
 {
   "info": {
-    "name": "Reqres API 测试集合",
-    "description": "针对 Reqres.in 公共 REST API 的自动化测试集合，覆盖登录、注册、用户 CRUD 及异常场景。共 20 条用例。",
+    "name": "JSONPlaceholder API 测试集合",
+    "description": "针对 JSONPlaceholder 公共 REST API 的自动化测试集合，覆盖用户 CRUD 及异常场景。共 16 条用例。",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Auth",
+      "name": "用户 CRUD",
       "item": [
         {
-          "name": "登录 - 合法凭据（应返回200 + token）",
+          "name": "GET 用户列表（应返回200 + 10条数据）",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns 10 users', () => {",
+                  "  var d = pm.response.json();",
+                  "  pm.expect(d.length).to.eql(10);",
                   "});",
-                  "pm.test('Response has token', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData).to.have.property('token');",
-                  "  pm.expect(jsonData.token).to.eql('QpwL5tke4Pnpja7X4');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
-            }
-          }
-        },
-        {
-          "name": "登录 - 密码缺失（应返回400）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function() {",
-                  "  pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Error message is Missing password', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.error).to.eql('Missing password');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"eve.holt@reqres.in\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
-            }
-          }
-        },
-        {
-          "name": "登录 - 用户名缺失（应返回400）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function() {",
-                  "  pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Error message contains missing email or username', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.error).to.include('Missing');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"password\": \"cityslicka\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
-            }
-          }
-        },
-        {
-          "name": "登录 - 用户不存在（应返回400）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function() {",
-                  "  pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Response has error message', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData).to.have.property('error');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"notfound@reqres.in\",\n  \"password\": \"whatever\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
-            }
-          }
-        },
-        {
-          "name": "注册 - 合法（应返回201 + id + token）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response has id and token', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData).to.have.property('id');",
-                  "  pm.expect(jsonData).to.have.property('token');",
-                  "  pm.expect(jsonData.id).to.eql(4);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"pistol\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/register",
-              "host": ["{{base_url}}"],
-              "path": ["register"]
-            }
-          }
-        },
-        {
-          "name": "注册 - 密码缺失（应返回400）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function() {",
-                  "  pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Error message is Missing password', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.error).to.eql('Missing password');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"sydney@fife\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/register",
-              "host": ["{{base_url}}"],
-              "path": ["register"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Users CRUD",
-      "item": [
-        {
-          "name": "GET 用户列表 - 第1页（应返回200 + data数组）",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response has data array with users', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData).to.have.property('data');",
-                  "  pm.expect(jsonData.data.length).to.be.above(0);",
-                  "  pm.expect(jsonData.data[0]).to.have.property('id');",
-                  "  pm.expect(jsonData.data[0]).to.have.property('email');",
-                  "  pm.expect(jsonData.data[0]).to.have.property('first_name');",
-                  "  pm.expect(jsonData.data[0]).to.have.property('last_name');",
+                  "pm.test('Each user has required fields', () => {",
+                  "  var d = pm.response.json();",
+                  "  d.forEach(u => pm.expect(u).to.have.all.keys('id','name','username','email','address','phone','website','company'));",
                   "});"
                 ]
               }
@@ -251,30 +30,22 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": {
-              "raw": "{{base_url}}/users?page=1",
-              "host": ["{{base_url}}"],
-              "path": ["users"],
-              "query": [{ "key": "page", "value": "1" }]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users"
           }
         },
         {
-          "name": "GET 单个用户 - ID 2（应返回200 + Janet）",
+          "name": "GET 单个用户 ID=1（应返回200）",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('User data matches Janet Weaver', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.data.id).to.eql(2);",
-                  "  pm.expect(jsonData.data.email).to.eql('janet.weaver@reqres.in');",
-                  "  pm.expect(jsonData.data.first_name).to.eql('Janet');",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('User ID is 1', () => {",
+                  "  var d = pm.response.json();",
+                  "  pm.expect(d.id).to.eql(1);",
+                  "  pm.expect(d.name).to.eql('Leanne Graham');",
+                  "  pm.expect(d.email).to.eql('Sincere@april.biz');",
                   "});"
                 ]
               }
@@ -282,36 +53,24 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": {
-              "raw": "{{base_url}}/users/2",
-              "host": ["{{base_url}}"],
-              "path": ["users", "2"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users/1"
           }
         },
         {
-          "name": "GET 单个用户 - ID 23 不存在（应返回404）",
+          "name": "GET 用户ID=11 不存在（应返回404或[]）",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 404', function() {",
-                  "  pm.response.to.have.status(404);",
-                  "});"
+                  "pm.test('Status code is 404', () => pm.response.to.have.status(404));"
                 ]
               }
             }
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": {
-              "raw": "{{base_url}}/users/23",
-              "host": ["{{base_url}}"],
-              "path": ["users", "23"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users/11"
           }
         },
         {
@@ -321,15 +80,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 201', function() {",
-                  "  pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Created user data is correct', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.name).to.eql('Zhang San');",
-                  "  pm.expect(jsonData.job).to.eql('QA Engineer');",
-                  "  pm.expect(jsonData).to.have.property('id');",
-                  "  pm.expect(jsonData).to.have.property('createdAt');",
+                  "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Created user has id', () => {",
+                  "  var d = pm.response.json();",
+                  "  pm.expect(d).to.have.property('id');",
+                  "  pm.expect(d.name).to.eql('Zhang San');",
+                  "  pm.expect(d.email).to.eql('zhangsan@test.com');",
                   "});"
                 ]
               }
@@ -338,18 +94,16 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Zhang San\",\n  \"job\": \"QA Engineer\"\n}"
+              "raw": "{\n  \"name\": \"Zhang San\",\n  \"email\": \"zhangsan@test.com\",\n  \"username\": \"zhangsan\"\n}"
             },
-            "url": {
-              "raw": "{{base_url}}/users",
-              "host": ["{{base_url}}"],
-              "path": ["users"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users"
           }
         },
         {
@@ -359,14 +113,10 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Updated data is correct', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.name).to.eql('Zhang San Updated');",
-                  "  pm.expect(jsonData.job).to.eql('Senior QA Engineer');",
-                  "  pm.expect(jsonData).to.have.property('updatedAt');",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Updated name is correct', () => {",
+                  "  var d = pm.response.json();",
+                  "  pm.expect(d.name).to.eql('Li Si Updated');",
                   "});"
                 ]
               }
@@ -375,18 +125,16 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Zhang San Updated\",\n  \"job\": \"Senior QA Engineer\"\n}"
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Li Si Updated\",\n  \"email\": \"lisi@test.com\"\n}"
             },
-            "url": {
-              "raw": "{{base_url}}/users/2",
-              "host": ["{{base_url}}"],
-              "path": ["users", "2"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users/1"
           }
         },
         {
@@ -396,12 +144,10 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', function() {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Partially updated job is correct', function() {",
-                  "  var jsonData = pm.response.json();",
-                  "  pm.expect(jsonData.job).to.eql('Lead QA Engineer');",
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Patched email is correct', () => {",
+                  "  var d = pm.response.json();",
+                  "  pm.expect(d.email).to.eql('newemail@test.com');",
                   "});"
                 ]
               }
@@ -410,112 +156,192 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"job\": \"Lead QA Engineer\"\n}"
+              "raw": "{\n  \"email\": \"newemail@test.com\"\n}"
             },
-            "url": {
-              "raw": "{{base_url}}/users/2",
-              "host": ["{{base_url}}"],
-              "path": ["users", "2"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users/1"
           }
         },
         {
-          "name": "DELETE 删除用户（应返回204）",
+          "name": "DELETE 删除用户（应返回200）",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 204', function() {",
-                  "  pm.response.to.have.status(204);",
-                  "});"
+                  "pm.test('Status code is 200', () => pm.response.to.have.status(200));"
                 ]
               }
             }
           ],
           "request": {
             "method": "DELETE",
-            "url": {
-              "raw": "{{base_url}}/users/2",
-              "host": ["{{base_url}}"],
-              "path": ["users", "2"]
-            }
+            "url": "https://jsonplaceholder.typicode.com/users/1"
           }
         }
       ]
     },
     {
-      "name": "参数化测试（用户ID 1-6）",
+      "name": "参数化测试（用户ID 1-5）",
       "item": [
         {
-          "name": "GET 用户 ID 1（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 用户 ID 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] }
+            "url": "https://jsonplaceholder.typicode.com/users/1"
           }
         },
         {
-          "name": "GET 用户 ID 2（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 用户 ID 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/2", "host": ["{{base_url}}"], "path": ["users", "2"] }
+            "url": "https://jsonplaceholder.typicode.com/users/2"
           }
         },
         {
-          "name": "GET 用户 ID 3（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 用户 ID 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/3", "host": ["{{base_url}}"], "path": ["users", "3"] }
+            "url": "https://jsonplaceholder.typicode.com/users/3"
           }
         },
         {
-          "name": "GET 用户 ID 4（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 用户 ID 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/4", "host": ["{{base_url}}"], "path": ["users", "4"] }
+            "url": "https://jsonplaceholder.typicode.com/users/4"
           }
         },
         {
-          "name": "GET 用户 ID 5（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 用户 ID 5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/5", "host": ["{{base_url}}"], "path": ["users", "5"] }
+            "url": "https://jsonplaceholder.typicode.com/users/5"
+          }
+        }
+      ]
+    },
+    {
+      "name": "文章资源",
+      "item": [
+        {
+          "name": "GET 文章列表（应返回200 + 100条）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns 100 posts', () => pm.expect(pm.response.json().length).to.eql(100));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "https://jsonplaceholder.typicode.com/posts"
           }
         },
         {
-          "name": "GET 用户 ID 6（应返回200）",
-          "event": [{
-            "listen": "test",
-            "script": { "exec": ["pm.test('Status 200', function() { pm.response.to.have.status(200); });"] }
-          }],
+          "name": "GET 单个文章（应返回200）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Post ID is 1', () => pm.expect(pm.response.json().id).to.eql(1));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/users/6", "host": ["{{base_url}}"], "path": ["users", "6"] }
+            "url": "https://jsonplaceholder.typicode.com/posts/1"
+          }
+        },
+        {
+          "name": "POST 创建文章（应返回201）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Has id', () => pm.expect(pm.response.json()).to.have.property('id'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"test title\",\n  \"body\": \"test body content\",\n  \"userId\": 1\n}"
+            },
+            "url": "https://jsonplaceholder.typicode.com/posts"
           }
         }
       ]

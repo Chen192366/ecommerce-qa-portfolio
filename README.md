@@ -71,9 +71,8 @@ pytest -v
 
 ### API 测试（Postman 图形化方式）
 
-1. 打开 Postman，导入 `7-postman/reqres-api-tests.json` 和 `reqres-env.json`
-2. 切换环境为 **Reqres 测试环境**
-3. 运行集合即可看到 20 条用例执行结果
+1. 打开 Postman，导入 `7-postman/reqres-api-tests.json`
+2. 运行集合即可看到 16 条用例执行结果
 
 ## 项目亮点
 
