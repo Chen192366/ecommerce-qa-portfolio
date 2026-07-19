@@ -21,7 +21,7 @@
 ├── 4-automation/            # Selenium POM 框架 + 22条 UI 自动化用例
 ├── 5-bug-reports/           # 3份规范缺陷报告
 ├── 6-screenshots/           # 测试截图
-└── 7-postman/               # Postman API 测试集合（20条用例）
+└── 7-postman/               # Postman API 测试集合（15条用例）
 ```
 
 ## 测试覆盖
@@ -72,13 +72,13 @@ pytest -v
 ### API 测试（Postman 图形化方式）
 
 1. 打开 Postman，导入 `7-postman/reqres-api-tests.json`
-2. 运行集合即可看到 16 条用例执行结果
+2. 运行集合即可看到 15 条用例执行结果
 
 ## 项目亮点
 
 - ✅ **STLC 全流程闭环**：从测试计划到缺陷报告，五个环节贯通
 - ✅ **SQL 三层次数据审计**：数据完整性 + 业务逻辑 + 异常发现
-- ✅ **API + UI 双维度自动化**：20条 API + 22条 UI 自动化用例
+- ✅ **API + UI 双维度自动化**：35条 API（Pytest 20条 + Postman 15条）+ 22条 UI 自动化用例
 - ✅ **POM 分层架构**：BasePage → 4个页面对象 → 独立测试层
 - ✅ **参数化测试**：一条用例覆盖多组输入，提高测试效率
 - ✅ **企业级缺陷报告**：含复现步骤、影响范围、修复建议
